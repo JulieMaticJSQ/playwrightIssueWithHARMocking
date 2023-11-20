@@ -36,7 +36,6 @@ for (const details of testDetails) {
 
     // Assert new card was added
     const cardsInDoingColumn = doingColumn.getByTestId("list-card");
-    console.log(`card count ${cardsInDoingColumn.count()}`);
     await expect(doingColumn.getByPlaceholder("Enter a title for this card")).toBeEmpty();
     await expect(cardsInDoingColumn.getByText(cardText)).toBeVisible();
   });
