@@ -3,6 +3,3 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/mocks/chromium/
-/mocks/firefox/
-/mocks/webkit/
