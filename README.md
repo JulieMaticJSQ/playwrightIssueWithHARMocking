@@ -10,11 +10,8 @@ To use this project:
 
 To reproduce mocking issue:
 
-1. Set `update: true` in `page.routeFromHAR()` (note: I believe you will need to do this instead of using the committed files because Atlassian revoked the API token that was stored in the HAR file when they detected that it was in a public repo)
-2. Run test "Add a card" in `trello.spec.ts` to record new HAR file
-3. Set `update: false` in `page.routeFromHAR()` so the test will run against the new HAR file
-4. Run test "Add a card" again
+Run the tests in trello.spec.ts
 
-**Expected behavior**: Test should pass without actually saving the Trello card (use case: this is a UI test that is trying to validate what happens in the UI when a card is created)
+**Expected behavior**: Test "Add a card - update HAR file" should pass and create a HAR file with all of the needed network activity. Test "Add a card - with mocking" should run against the HAR file that was created and pass without actually saving the Trello card (use case: this is a UI test that is trying to validate what happens in the UI when a card is created)
 
-**Actual behavior**: The card does not get created and the test fails
+**Actual behavior**: Test "Add a card - with mocking" fails because because the card does not get created (the text is typed but after pressing Enter, the card isn't added to the list)

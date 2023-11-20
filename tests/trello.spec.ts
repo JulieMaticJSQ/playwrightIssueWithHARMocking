@@ -27,14 +27,6 @@ for (const details of testDetails) {
     // Assert the card doesn't already exist in the "Doing" column for the mocked test
     const cardText = `Playwright is awesome! ${test.info().project.name} ${randomNumber}`;
     const doingColumn = page.getByTestId("list").filter({ hasText: "Doing" });
-    const cardsInDoingColumn = doingColumn.getByTestId("list-card");
-    const cardLocator = cardsInDoingColumn.getByText(cardText);
-
-    if (!details.update) {
-      // Assert dummy card is visible so we know cards have loaded
-      await expect(cardsInDoingColumn.getByText("Dummy card")).toBeVisible();
-      await expect(cardLocator).not.toBeVisible();
-    }
 
     // Add a card
     await doingColumn.getByRole("button", { name: "Add a card" }).click();
@@ -43,6 +35,9 @@ for (const details of testDetails) {
     await page.getByPlaceholder("Enter a title for this card").press("Enter");
 
     // Assert new card was added
-    await expect(cardsInDoingColumn.getByText("Playwright is awesome!")).toBeVisible();
+    const cardsInDoingColumn = doingColumn.getByTestId("list-card");
+    console.log(`card count ${cardsInDoingColumn.count()}`);
+    await expect(doingColumn.getByPlaceholder("Enter a title for this card")).toBeEmpty();
+    await expect(cardsInDoingColumn.getByText(cardText)).toBeVisible();
   });
 }
