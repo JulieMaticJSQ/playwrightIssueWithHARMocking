@@ -24,19 +24,23 @@ for (const details of testDetails) {
     // Start mocking
     await page.routeFromHAR(`mocks/${test.info().project.name}/trello.har`, { url: /.*(\/cards|\/batch)/, update: details.update });
 
-    // Assert the card doesn't already exist in the "Doing" column for the mocked test
+    // Get the number of cards in the "Doing" column to compare against later
     const cardText = `Playwright is awesome! ${test.info().project.name} ${randomNumber}`;
     const doingColumn = page.getByTestId("list").filter({ hasText: "Doing" });
+    const cardsInDoingColumn = doingColumn.getByTestId("list-card");
+    await expect(cardsInDoingColumn.getByText("Dummy card")).toBeVisible();
+    const cardCount = await cardsInDoingColumn.count();
 
     // Add a card
     await doingColumn.getByRole("button", { name: "Add a card" }).click();
     console.log(`card name for this run: ${cardText}`)
-    await page.getByPlaceholder("Enter a title for this card").fill(cardText);
-    await page.getByPlaceholder("Enter a title for this card").press("Enter");
+
+    const cardComposer = doingColumn.getByPlaceholder("Enter a title for this card");
+    await cardComposer.fill(cardText);
+    await cardComposer.press("Enter");
 
     // Assert new card was added
-    const cardsInDoingColumn = doingColumn.getByTestId("list-card");
-    await expect(doingColumn.getByPlaceholder("Enter a title for this card")).toBeEmpty();
+    await expect(cardsInDoingColumn).toHaveCount(cardCount + 1);
     await expect(cardsInDoingColumn.getByText(cardText)).toBeVisible();
   });
 }
