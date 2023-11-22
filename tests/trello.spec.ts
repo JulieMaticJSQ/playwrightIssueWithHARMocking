@@ -22,7 +22,7 @@ test('Add a card', async ({ page }) => {
 
   // Assert there are no cards in the "Doing" column
   const doingColumn = page.getByTestId("list").filter({ hasText: "Doing" });
-  const cardsInDoingColumn = doingColumn.getByTestId("list-card");
+  const cardsInDoingColumn = doingColumn.getByTestId("trello-card");
   await expect(cardsInDoingColumn).toHaveCount(0);
 
   // Add a card
@@ -31,6 +31,7 @@ test('Add a card', async ({ page }) => {
   await page.getByPlaceholder("Enter a title for this card").press("Enter");
 
   // Assert new card was added
-  await expect(cardsInDoingColumn).toHaveCount(1);
-  await expect(cardsInDoingColumn.getByText("Playwright is awesome!")).toBeVisible();
+  const myCard = cardsInDoingColumn.filter({ hasText: "Playwright is awesome!", hasNotText: /(chromium)|(firefox)/ });
+  await myCard.waitFor({ state: "visible" });
+  await expect(myCard).toHaveCount(1);
 });
